@@ -11,6 +11,7 @@ var markers = [
 			name: "rogersPark",
 			latitude: "42.0102",
 			longitude: "-87.6755",
+			venueId: '49bfffd0f964a5203c551fe3',
 			title:"Rogers Park"
 		},
 		
@@ -18,6 +19,7 @@ var markers = [
 			name: "giardanos",
 			latitude: "42.0065706",
 			longitude: "-87.6614",
+			venueId: '4b9d3afcf964a520969b36e3',
 			title:"Giardano's Pizza"
 		},
 		
@@ -25,6 +27,7 @@ var markers = [
 			name: "mayne_stage",
 			latitude: "42.008259",
 			longitude: "-87.665028",
+			venueId: '50e61588e4b0e433727bbc2f',
 			title:"Mayne Stage"
 		},
 		
@@ -32,10 +35,54 @@ var markers = [
 			name: "los_portales",
 			latitude: "42.0080956",
 			longitude: "-87.6667577",
+			venueId: '4af75357f964a5205e0822e3',
 			title:"Los Portales"
 		}
 		
 ];
+
+// Search for Foursquare for a user tip for each location; if no tip available
+//  or unable to access Foursquare API, error msg "Listening for latest buzz..." will display.
+function getTips() {
+	for (i=0; i < markers.length; i++) {
+		var foursquareUrl = 'https://api.foursquare.com/v2/venues/' + 
+		markers[i].venueId + 
+		'?client_id=YRN5IUY2UOMHO3UYB2FKJYRH4AHJVGBP1SVAPPPGGT31FB2E' + 
+		'&client_secret=VHSZ2R1SLQ0I0QB1KZFWU0K2VMBGJIGIDL4P1TYWTDX4OXRM&v=20150504';
+		//console.log(foursquareUrl);
+				$.getJSON(foursquareUrl)
+			.done(function(response){
+				var tipText,
+					tipId,
+					tips;
+				tipId = response.response.venue.id;
+				console.log(tipId);
+				if( response.response.venue.tips.count > 0) {
+					tipText = response.response.venue.tips.groups[0].items[0].text;
+				} else {
+					tipText = "No tips available for this location yet...";
+				}
+				tips = tipId + '%' + tipText;
+				console.log(tips);
+				getTipsCallback(tips);
+			})
+			.fail(function(jqXHR, textStatus, errorThrown) {
+				alert('Error connecting to Foursquare: ' + textStatus);
+			});
+		}
+	}
+
+// Update data model (markers array) with tip from Foursquare by matching venue ids
+function getTipsCallback(tip) {
+	var tipSplit = tip.split('%');
+	for (i=0; i<markers.length; i++) {
+		if (markers[i].venueId === tipSplit[0]) {
+			markers[i].tips = tipSplit[1];
+			return;
+		}
+	}
+
+}
 
 
 /* The intialize function will create the map based on the global variable
@@ -55,6 +102,7 @@ function initialize() {
 	 
 	 // Call the ViewModel function and pass in the google.maps.Map object
 	 
+	 getTips();
 	 setMarkers(markers, map);
 }
            
@@ -85,6 +133,10 @@ var setMarkers = function(markers, map) {
    	});
 	markers[i].setMap(map);
 	
+	// added this line.
+	var infowindow = new google.maps.InfoWindow({
+			maxWidth: 200});
+
 	};
 };
 

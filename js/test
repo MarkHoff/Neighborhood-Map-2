@@ -1,0 +1,19 @@
+// Add markers for coffee and yoga locations from model to map
+function setMarkers(location) {
+	for (i=0; i<location.length; i++){
+
+		if (location[i].category === "coffee") {
+			icon = coffeeIcon;
+		}
+		else if (location[i].category === "yoga") {
+			icon = yogaIcon;
+		}
+		location[i].holdMarker = new google.maps.Marker({
+			position: new google.maps.LatLng(location[i].lat, location[i].longitude),
+			map: map,
+			title: location[i].name,
+			icon: icon,
+		});
+
+		var infowindow = new google.maps.InfoWindow({
+			maxWidth: 200});
