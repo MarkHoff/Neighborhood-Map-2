@@ -136,6 +136,8 @@ var setMarkers = function(markers, map) {
 	// added this line.
 	var infowindow = new google.maps.InfoWindow({
 			maxWidth: 200});
+			
+	infowindow.open(map, markers[i]);
 
 	};
 };
