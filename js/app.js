@@ -106,41 +106,56 @@ function initialize() {
            
 /*Function that receives attributes from the markers array. */
 var setMarkers = function(location, map) {
-	var self = this;
-	var markerlocation = [];
+	//var self = this;
+	//var marker = [];
+	var myPosition = [];
+	var contentString = [];
 	/* Temporary ko.observables to check the marker object attributes outside of map */
-	self.name = ko.observable(location.name);
-	self.latitude = ko.observable(location.latitude);
-	self.longitude = ko.observable(location.longitude);
-	self.map = ko.observable(location.map);
-	self.title = ko.observable(location.title);
-	self.venueId = ko.observable(location.venueId);
-	self.tips = ko.observable(location.tips);
-	self.position = ko.computed(function() {
+	this.name = ko.observable(location.name);
+	this.latitude = ko.observable(location.latitude);
+	this.longitude = ko.observable(location.longitude);
+	this.map = ko.observable(location.map);
+	this.title = ko.observable(location.title);
+	this.venueId = ko.observable(location.venueId);
+	this.tips = ko.observable(location.tips);
+	this.position = ko.computed(function() {
 		return this.latitude() + "," + this.longitude();
 	}, this);
 	
+	//infowindow = new google.maps.InfoWindow();
 	/*This for loop will initialize each of the markers as defined in the 
 	 * markers model.  The setMap() function places the markers on the map
 	 * as defined by the latitude and longitude properties.  
 	 * */
 	for (i=0; i<location.length; i++) {
-		markerlocation[i] = new google.maps.Marker({
-			position: new google.maps.LatLng(location[i].latitude,
-			location[i].longitude), 
+		myPosition[i] = new google.maps.LatLng(location[i].latitude,location[i].longitude);
+		marker = new google.maps.Marker({
+			position: myPosition[i],
 			title: location[i].title,  
 			venueId: location[i].venueId,
 			tips: location[i].tips
    	});
-	var infowindow = new google.maps.InfoWindow({
-			content: location[i].title + "<br>" + location[i].tips + "<br>" + location[i].latitude + " " + location[i].longitude,
-			maxWidth: 200});
-	markerlocation[i].setMap(map);		
-	//If marker is clicked, open info window corresponding to the marker.
-		google.maps.event.addDomListener(markerlocation[i], 'click', (function() {
-				infowindow.open(map, markerlocation[i]);
-				})
-		);
+   	
+	marker.setMap(map);	
+	
+	//contentString[i] = location[i].title + '<br>' + location[i].tips + '<br>' + 
+	//location[i].latitude + ' ' + location[i].longitude;
+	
+			//console.log("Content String" + contentString[i]);
+	
+	 infowindow = new google.maps.InfoWindow({
+			content: location[i].title + "<br>" + location[i].tips + "<br>" + 
+			location[i].latitude + " " + location[i].longitude,
+			//position: myPosition[i],
+			maxWidth: 200
+			});	
+	
+	google.maps.event.addListener(marker, 'click', function() {
+    //infowindow.setContent(this.contentString[i]);
+	infowindow.open(map, this);
+ });
+		console.log("MyPosition " + myPosition[i]);
+		console.log("markerlocation " + marker.title);
 	};	
 };
 
