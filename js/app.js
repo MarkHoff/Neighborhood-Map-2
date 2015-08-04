@@ -12,11 +12,13 @@ var markers = [
 
 		{
 			name: "rogersParkSocial",
-			latitude: "42.0102",
-			longitude: "-87.6755",
+			latitude: "42.007407",
+			longitude: "-87.6660",
 			streetAddress: "6922 N. Glenwood Ave",
 			cityAddress:  "Chicago, Illinois, 60626",
 			url: "www.rogersparksocial.com",
+			id: "nav0",
+			visible: ko.observable(true),
 			venueId: "536300da498ee44e63dcbc1d",
 			tips: "Waiting for Foursquare tips...",
 			title:"Rogers Park Social"
@@ -29,6 +31,8 @@ var markers = [
 			streetAddress: "6836 North Sheridan Road",
 			cityAddress:  "Chicago, Illinois, 60626",
 			url: "www.giordanos.com",
+			id: "nav1",
+			visible: ko.observable(true),
 			venueId: "4a189b92f964a520d0791fe3",
 			tips: "Waiting for Foursquare tips...",
 			title:"Giordano's Pizza"
@@ -41,6 +45,8 @@ var markers = [
 			streetAddress: "1328 West Morse Avenue",
 			cityAddress:  "Chicago, Illinois, 60626",
 			url: "www.maynestage.com",
+			id: "nav2",
+			visible: ko.observable(true),
 			venueId: "4b7acc0cf964a520403d2fe3",
 			tips: "Waiting for Foursquare tips...",
 			title:"Mayne Stage"
@@ -53,9 +59,95 @@ var markers = [
 			streetAddress: "1418 W Morse Ave",
 			cityAddress:  "Chicago, Illinois, 60626",
 			url: "www.losportalesmexicanrestaurantchicago.com",
+			id: "nav3",
+			visible: ko.observable(true),
 			venueId: "4a91eac3f964a520551c20e3",
 			tips: "Waiting for Foursquare tips...",
 			title:"Los Portales"
+		},
+		
+		{
+			name: "pub_626",
+			latitude: "42.0080956",
+			longitude: "-87.66632",
+			streetAddress: "1406 West Morse Avenue",
+			cityAddress:  "Chicago, Illinois, 60626",
+			url: "www.pub626.com",
+			id: "nav4",
+			visible: ko.observable(true),
+			venueId: "5531bd01498ef49d4df540bb",
+			tips: "Waiting for Foursquare tips...",
+			title:"Pub 626"
+		},
+		
+		{
+			name: "morse_gyros",
+			latitude: "42.00774",
+			longitude: "-87.66542",
+			streetAddress: "1335 West Morse Avenue",
+			cityAddress:  "Chicago, Illinois, 60626",
+			url: "www.morsegyroschicken.com",
+			id: "nav5",
+			visible: ko.observable(true),
+			venueId: "4c268489905a0f478a766360",
+			tips: "Waiting for Foursquare tips...",
+			title:"Morse Gyros"
+		},
+		
+		{
+			name: "sp_kebab",
+			latitude: "42.00563",
+			longitude: "-87.66095",
+			streetAddress: "6808 North Sheridan Road",
+			cityAddress:  "Chicago, Illinois, 60626",
+			url: "www.spkebab.com",
+			id: "nav6",
+			visible: ko.observable(true),
+			venueId: "4d46054c1b62b1f7111203e3",
+			tips: "Waiting for Foursquare tips...",
+			title:"SP Kebab"
+		},
+		
+		{
+			name: "twisted_tapas",
+			latitude: "42.00586",
+			longitude: "-87.66031",
+			streetAddress: "1146 West Pratt Boulevard",
+			cityAddress:  "Chicago, Illinois, 60626",
+			url: "plus.google.com/113326649920571028301/about?hl=en-US",
+			id: "nav7",
+			visible: ko.observable(true),
+			venueId: "524e032011d2486d302806a0",
+			tips: "Waiting for Foursquare tips...",
+			title:"Twisted Tapas"
+		},
+		
+		{
+			name: "la_cazuela",
+			latitude: "42.00730",
+			longitude: "-87.67376",
+			streetAddress: "6922 North Clark Street",
+			cityAddress:  "Chicago, Illinois, 60626",
+			url: "www.la-cazuela.com",
+			id: "nav8",
+			visible: ko.observable(true),
+			venueId: "4b400ac2f964a520b7b425e3",
+			tips: "Waiting for Foursquare tips...",
+			title:"La Cazuela"
+		},
+		
+		{
+			name: "fungs",
+			latitude: "42.00777",
+			longitude: "-87.66557",
+			streetAddress: "1343 West Morse Avenue,",
+			cityAddress:  "Chicago, Illinois, 60626",
+			url: "www.fungsmandarin.com",
+			id: "nav9",
+			visible: ko.observable(true),
+			venueId: "51bbbac3498e47af474f9641",
+			tips: "Waiting for Foursquare tips...",
+			title:"Fung's Mandarin"
 		}
 		
 ];
@@ -64,7 +156,7 @@ var markers = [
  * or unable to access Foursquare API, the default message 'Waiting for Foursquare tips...' will display.
  */  
 function connectFourSquare() {
-	var responseTips = [];
+	//var responseTips = [];
 	for (i=0; i < markers.length; i++) {
 		var foursquareUrl = 'https://api.foursquare.com/v2/venues/' + 
 		markers[i].venueId + 
@@ -81,9 +173,10 @@ function connectFourSquare() {
 				} else {
 					tipText = "No tips available for this location yet...";
 				}
-				tips = tipId + '%' + tipText;		
-				console.log(tips);	
-				splitTips(tips);
+				tips = tipId + '%' + tipText;	
+				splitTips(tips);	
+				//console.log(markers[i].tips);
+				//return;	
 			})
 			.fail(function(jqXHR, textStatus, errorThrown) {
 				alert('Error connecting to Foursquare: ' + textStatus);
@@ -98,7 +191,7 @@ function splitTips(tip) {
 	for (i=0; i<markers.length; i++) {
 		if (markers[i].venueId === tipSplit[0]) {
 			markers[i].tips = tipSplit[1];
-			return;
+			return; 
 		} 
 	}
 	
@@ -127,7 +220,42 @@ function initialize() {
 	 // Call the ViewModel function and pass in the google.maps.Map object
 	 connectFourSquare();
 	 setMarkers(markers);
+	 
+	 
+    //Reset map on click handler and
+    //when window resize conditionals are met
+    function resetMap() {
+        var windowWidth = $(window).width();
+        if(windowWidth <= 1080) {
+            map.setZoom(16);
+            map.setCenter(mapOptions.center);
+        } else if(windowWidth > 1080) {
+            map.setZoom(16);
+            map.setCenter(mapOptions.center);   
+        }
+    }
+    $("#reset").click(function() {
+        resetMap();
+    });
+    
+   $(window).resize(function() {
+        resetMap();
+    }); 
 };
+
+
+
+//Determines if markers should be visible
+//This function is passed in the knockout viewModel function
+function setAllMap() {
+  for (var i = 0; i < markers.length; i++) {
+    if(markers[i].boolTest === true) {
+    markers[i].holdMarker.setMap(map);
+    } else {
+    markers[i].holdMarker.setMap(null);
+    }
+  }
+}
            
 /*Function that receives attributes from the markers array. */
  var setMarkers = function(location) {
@@ -144,19 +272,18 @@ function initialize() {
 			position: position[i],
 			map: map,
 			title: location[i].title,  
-			venueId: location[i].venueId,
-			tips: location[i].tips
+			//venueId: location[i].venueId,
+			//tips: location[i].tips
    	});
-   	
-   	
+   	 	
         //Binds infoWindow content to each marker
      location[i].contentString = '<img src="' + streetViewUrl + location[i].streetAddress + location[i].cityAddress +
              '" alt="Street View Image of ' + location[i].title + '"><br><hr style="margin-bottom: 5px"><strong>' + 
              location[i].title + '</strong><br><p>' + 
+             location[i].tips + '<br>' + 
              location[i].streetAddress + '<br>' + 
              location[i].cityAddress + '<br></p><a class="web-links" href="http://' + location[i].url + 
              '" target="_blank">' + location[i].url + '</a>';
-   	 // location[i].contentString = "Welcome to " + location[i].title + "</br>" + location[i].tips;
    	   	
   var infowindow = new google.maps.InfoWindow({
             content: location[i].contentString
@@ -164,7 +291,13 @@ function initialize() {
             
    new google.maps.event.addListener(location[i].holdMarker, 'click', (function(marker, i) {
       return function() {
-      infowindow.setContent(location[i].contentString);
+      infowindow.setContent('<img src="' + streetViewUrl + location[i].streetAddress + location[i].cityAddress +
+             '" alt="Street View Image of ' + location[i].title + '"><br><hr style="margin-bottom: 5px"><strong>' + 
+             location[i].title + '</strong><br><p>' + 
+             '<p><strong>Foursquare Tip:</strong><br></p>' + location[i].tips + '<br><br>' + 
+             location[i].streetAddress + '<br>' + 
+             location[i].cityAddress + '<br></p><a class="web-links" href="http://' + location[i].url + 
+             '" target="_blank">' + location[i].url + '</a>');
       infowindow.open(map,this);
       var windowWidth = $(window).width();
          if(windowWidth <= 1080) {
@@ -193,14 +326,99 @@ function initialize() {
    	
 };	
 	
- //The ViewModel 
-var myViewModel = function(myMap) {
-	var self = this;
-	this.markerList = ko.observableArray([]);
+ 
+//Query through the different locations from nav bar with knockout.js
+    //only display markers and nav elements that match query result
+var viewModel = {
+    query: ko.observable(''),
+};
+
+viewModel.markers = ko.dependentObservable(function() {
+    var self = this;
+    var search = self.query().toLowerCase();
+    return ko.utils.arrayFilter(markers, function(marker) {
+    if (marker.title.toLowerCase().indexOf(search) >= 0) {
+            marker.boolTest = true;
+            return marker.visible(true);
+        } else {
+            marker.boolTest = false;
+            setAllMap();
+            return marker.visible(false);
+        }
+    });       
+}, viewModel);
+
+ko.applyBindings(viewModel);
+
+
+//show $ hide markers in sync with nav
+$("#input").keyup(function() {
+setAllMap();
+});
+
+
+var isNavVisible = true;
+function noNav() {
+    $("#search-nav").animate({
+                height: 0, 
+            }, 500);
+            setTimeout(function() {
+                $("#search-nav").hide();
+            }, 500);    
+            $("#arrow").attr("src", "img/down-arrow.gif");
+            isNavVisible = false;
+}
+
+
+function yesNav() {
+    $("#search-nav").show();
+            var scrollerHeight = $("#scroller").height() + 55;
+            if($(window).height() < 600) {
+                $("#search-nav").animate({
+                    height: scrollerHeight - 100,
+                }, 500, function() {
+                    $(this).css('height','auto').css("max-height", 439);
+                });  
+            } else {
+            $("#search-nav").animate({
+                height: scrollerHeight,
+            }, 500, function() {
+                $(this).css('height','auto').css("max-height", 549);
+            });
+            }
+            $("#arrow").attr("src", "img/up-arrow.gif");
+            isNavVisible = true;
+}
 	
-	markers.forEach(function(markerItem){
-		self.markerList.push(new setMarkers(markerItem) );
-	});	
-	return self.markerList;
-}; 
-ko.applyBindings(myViewModel); 
+
+function hideNav() {
+    if(isNavVisible === true) {
+            noNav();
+            
+    } else {
+            yesNav();  
+    }
+}
+$("#arrow").click(hideNav);
+
+
+//Hide Nav if screen width is resized to < 850 or height < 595
+//Show Nav if screen is resized to >= 850 or height is >= 595
+    //Function is run when window is resized
+$(window).resize(function() {
+    var windowWidth = $(window).width();
+    if ($(window).width() < 850 && isNavVisible === true) {
+            noNav();
+        } else if($(window).height() < 595 && isNavVisible === true) {
+            noNav();
+        }
+    if ($(window).width() >= 850 && isNavVisible === false) {
+            if($(window).height() > 595) {
+                yesNav();
+            }
+        } else if($(window).height() >= 595 && isNavVisible === false) {
+            if($(window).width() > 850) {
+                yesNav();
+            }     
+        }    
+});
