@@ -1,3 +1,21 @@
+/*
+ *************************************************************
+ * 															 *
+ * Project 5 - Neighborhood Map Application 				 *
+ * Author: Mark Hoffman										 *
+ * Date 8/8/2015											 *
+ * 															 *
+ *************************************************************
+ */
+
+/*
+ * **********************************************
+ * List of lobal variables to be accessed at 	*
+ * various places within the code below.		*
+ * 												*
+ * **********************************************
+ */
+
 var map;
 var var_location = {lat: 42.0102, lng: -87.6755};  //Center of map on load.
 var streetViewImage;
@@ -5,9 +23,16 @@ var streetViewUrl = 'https://maps.googleapis.com/maps/api/streetview?size=180x90
 
 google.maps.event.addDomListener(window, 'load', initialize);// Load the map on load and call the initialize function.
 
-/* The Model - 
- * An array of object literals containing the attributes of each of the markers. 
- * */
+/* 
+ ************************************************
+ * 												*
+ * The Model - 									*
+ * An array of object literals containing the	*
+ * attributes of each of the markers.			* 
+ * 												*
+ ************************************************
+ */
+
 var markers = [
 
 		{
@@ -152,11 +177,17 @@ var markers = [
 		
 ];
 
-/* Search for Foursquare for a user tip for each location; if no tip available
- * or unable to access Foursquare API, the default message 'Waiting for Foursquare tips...' will display.
+/* 
+ * ******************************************************************************
+ * 																				*
+ * Search for Foursquare for a user tip for each location; if no tip available	*
+ * or unable to access Foursquare API, the default message 						*
+ * 'No tips available for this location yet...' will display.					*
+ * 																				*
+ * ******************************************************************************
  */  
+
 function connectFourSquare() {
-	//var responseTips = [];
 	for (i=0; i < markers.length; i++) {
 		var foursquareUrl = 'https://api.foursquare.com/v2/venues/' + 
 		markers[i].venueId + 
@@ -175,8 +206,6 @@ function connectFourSquare() {
 				}
 				tips = tipId + '%' + tipText;	
 				splitTips(tips);	
-				//console.log(markers[i].tips);
-				//return;	
 			})
 			.fail(function(jqXHR, textStatus, errorThrown) {
 				alert('Error connecting to Foursquare: ' + textStatus);
@@ -185,7 +214,16 @@ function connectFourSquare() {
 	
 }
 
-// Update data model (markers array) with tip from Foursquare by matching venue ids
+/*
+ ************************************************************************************
+ * 																					*
+ * This function is called by the .getJason function when							* 
+ * a response is received from Foursquare.  It splits the tips from the venue id's	*
+ * and matches the correct tip to the venue id in the markers array. 				*
+ * 																					*
+ * **********************************************************************************
+ */
+
 function splitTips(tip) {
 	var tipSplit = tip.split('%');
 	for (i=0; i<markers.length; i++) {
@@ -197,10 +235,21 @@ function splitTips(tip) {
 	
 }
 
-/* The intialize function will create the map based on the global variable
- * var_location, which contains the original latitude and longitude.
- * This function then passes the markers and map variables to the 
- * setMarkers function to create the markers on the map. */
+/* 
+ ************************************************************************
+ * 																		*
+ * The intialize function is called after the map loads and 			*
+ * will create the map based on the global variable						*
+ * var_location, which contains the original latitude and longitude.	*
+ * The initial map specifications are listed in the MapOptions variable	*
+ * This function then calls the FourSquare function and					* 
+ * passes the markers and map variables to the 							*
+ * setMarkers function to create the markers on the map. 				*
+ * The resetMap function will reset the zoom of the map when the		* 
+ *  window is resized or on mouse click									*
+ * **********************************************************************
+ */
+
 function initialize() {
 	var mapOptions = {
 		center: new google.maps.LatLng(var_location.lat, var_location.lng), 
@@ -217,17 +266,30 @@ function initialize() {
 		
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	
-	 // Call the ViewModel function and pass in the google.maps.Map object
+	 /*
+	  * *****************************************
+	  * Call connectFourSquare and setMarkers 	*
+	  * functions after the map is loaded.		*
+	  * 										*
+	  * *****************************************
+	  */
+	 
 	 connectFourSquare();
 	 setMarkers(markers);
 	 
 	 
-    //Reset map on click handler and
-    //when window resize conditionals are met
+    /*
+     * ******************************************
+     * Reset map on click handler and			*
+     * when window resize conditionals are met	*
+     * 											*
+     * ******************************************
+     */
+    
     function resetMap() {
         var windowWidth = $(window).width();
         if(windowWidth <= 1080) {
-            map.setZoom(16);
+            map.setZoom(14);
             map.setCenter(mapOptions.center);
         } else if(windowWidth > 1080) {
             map.setZoom(16);
@@ -243,10 +305,15 @@ function initialize() {
     }); 
 };
 
+/*
+ ************************************************ 	
+ * Determines if markers should be visible		*
+ * This function is passed in the knockout 		*
+ * viewModel function							*
+ * 												*
+ * **********************************************
+ */
 
-
-//Determines if markers should be visible
-//This function is passed in the knockout viewModel function
 function setAllMap() {
   for (var i = 0; i < markers.length; i++) {
     if(markers[i].boolTest === true) {
@@ -257,14 +324,28 @@ function setAllMap() {
   }
 }
            
-/*Function that receives attributes from the markers array. */
+/*
+ * ******************************************************************
+ * The setMarkers function is called by the initialize function,	* 
+ * which passes in the atrributes of the markers array. 			*
+ * The markers are positioned according to the lat and long			*
+ * attributes of each marker.  										*
+ * 																	*
+ * ******************************************************************
+ */
+
  var setMarkers = function(location) {
 	var position = [];
 	
-	/*This for loop will initialize each of the markers as defined in the 
-	 * markers model and places the markers on the map
-	 * as defined by the latitude and longitude properties.  
-	 * */
+	/* 
+	 * **********************************************************************
+	 * This for loop will initialize each of the markers as defined in the 	*
+	 * markers model and places the markers on the map						*
+	 * as defined by the latitude and longitude properties.  				*
+	 * 																		*
+	 * **********************************************************************
+	 */
+	
 	for (i=0; i<location.length; i++) {
 		position[i] = new google.maps.LatLng(location[i].latitude,location[i].longitude);
 		
@@ -272,11 +353,15 @@ function setAllMap() {
 			position: position[i],
 			map: map,
 			title: location[i].title,  
-			//venueId: location[i].venueId,
-			//tips: location[i].tips
    	});
    	 	
-        //Binds infoWindow content to each marker
+        /*
+         * ******************************************
+         * Binds infoWindow content to each marker	*
+         * 											*
+         * ******************************************
+         */
+        
      location[i].contentString = '<img src="' + streetViewUrl + location[i].streetAddress + location[i].cityAddress +
              '" alt="Street View Image of ' + location[i].title + '"><br><hr style="margin-bottom: 5px"><strong>' + 
              location[i].title + '</strong><br><p>' + 
@@ -284,11 +369,28 @@ function setAllMap() {
              location[i].streetAddress + '<br>' + 
              location[i].cityAddress + '<br></p><a class="web-links" href="http://' + location[i].url + 
              '" target="_blank">' + location[i].url + '</a>';
-   	   	
+  
+  /*
+   ******************************************************
+   * The infoWindow object which holds the information	* 
+   * passed in from the markers array. 					*
+   * 													*
+   * ****************************************************
+   */	   
+   	
   var infowindow = new google.maps.InfoWindow({
             content: location[i].contentString
         });
-            
+        
+   /*
+    * ***********************************************************************************************
+    * The addListener method of the Google Maps object is activated by clicking the mouse on one	*
+    * of the markers.  It will open the infoWindow object containing the address and other info		*
+    * passed in from the markers array, as well as a Street View image of the object.				*
+    * 																								*
+    * ***********************************************************************************************
+    */         
+   
    new google.maps.event.addListener(location[i].holdMarker, 'click', (function(marker, i) {
       return function() {
       infowindow.setContent('<img src="' + streetViewUrl + location[i].streetAddress + location[i].cityAddress +
@@ -299,26 +401,39 @@ function setAllMap() {
              location[i].cityAddress + '<br></p><a class="web-links" href="http://' + location[i].url + 
              '" target="_blank">' + location[i].url + '</a>');
       infowindow.open(map,this);
+      
       var windowWidth = $(window).width();
          if(windowWidth <= 1080) {
-            map.setZoom(14);
+            map.setZoom(20);
          } else if(windowWidth > 1080) {
-            map.setZoom(16);  
+            map.setZoom(20);  
          }
          map.setCenter(marker.getPosition());
          location[i].picBoolTest = true;
           }; 
         })(location[i].holdMarker, i));
-        
-        
+                
         var searchNav = $('#nav' + i);
+        
+        /*
+         * **********************************************************
+         * This function zooms in on the marker and displays the	* 
+         * infoWindow when an item in the search list is clicked.	*
+         * 															*
+         * **********************************************************
+         */
         searchNav.click((function(marker, i) {
           return function() {
-            infowindow.setContent(location[i].contentString);
+            infowindow.setContent('<img src="' + streetViewUrl + location[i].streetAddress + location[i].cityAddress +
+             '" alt="Street View Image of ' + location[i].title + '"><br><hr style="margin-bottom: 5px"><strong>' + 
+             location[i].title + '</strong><br><p>' + 
+             '<p><strong>Foursquare Tip:</strong><br></p>' + location[i].tips + '<br><br>' + 
+             location[i].streetAddress + '<br>' + 
+             location[i].cityAddress + '<br></p><a class="web-links" href="http://' + location[i].url + 
+             '" target="_blank">' + location[i].url + '</a>');
             infowindow.open(map,marker);
             map.setZoom(20);
             map.setCenter(marker.getPosition());
-            //location[i].picBoolTest = true;
           }; 
         })(location[i].holdMarker, i));
     
@@ -326,9 +441,14 @@ function setAllMap() {
    	
 };	
 	
- 
-//Query through the different locations from nav bar with knockout.js
-    //only display markers and nav elements that match query result
+/*
+ ********************************************************************************
+ * The View Model, using Knockout.js. This is the interface between the View	*
+ * (index.html) and the Model. 													*
+ * 																				*
+ * ****************************************************************************** 
+ */
+
 var viewModel = {
     query: ko.observable(''),
 };
@@ -348,16 +468,37 @@ viewModel.markers = ko.dependentObservable(function() {
     });       
 }, viewModel);
 
+/* 
+ ************************
+ * Activate Knockout	*
+ * 						*
+ ************************
+ */
+
 ko.applyBindings(viewModel);
 
 
-//show $ hide markers in sync with nav
+/*
+ ********************************************
+ * show / hide markers in sync with nav		*
+ * 											*
+ ********************************************
+ */
+
 $("#input").keyup(function() {
 setAllMap();
 });
 
 
 var isNavVisible = true;
+
+/*
+ * ******************
+ * Hide nav bar		*
+ * 					*
+ * ******************
+ */
+
 function noNav() {
     $("#search-nav").animate({
                 height: 0, 
@@ -369,6 +510,13 @@ function noNav() {
             isNavVisible = false;
 }
 
+
+/*
+ * ******************
+ * Show nav bar		*
+ * 					*
+ * ******************
+ */
 
 function yesNav() {
     $("#search-nav").show();
@@ -402,9 +550,14 @@ function hideNav() {
 $("#arrow").click(hideNav);
 
 
-//Hide Nav if screen width is resized to < 850 or height < 595
-//Show Nav if screen is resized to >= 850 or height is >= 595
-    //Function is run when window is resized
+/*
+ * **************************************************
+ * Function to show or hide the nav bar depending	*
+ * on the size of the window.						*
+ * 													*
+ * **************************************************
+ */
+
 $(window).resize(function() {
     var windowWidth = $(window).width();
     if ($(window).width() < 850 && isNavVisible === true) {
