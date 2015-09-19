@@ -277,8 +277,7 @@ function initialize() {
 	  */
 	 
 	 connectFourSquare();
-	 setMarkers(markers);
-	 
+	 setMarkers(markers);	 
 	 
     /*
      * ******************************************
@@ -360,8 +359,7 @@ function setAllMap() {
   var infowindow = new google.maps.InfoWindow({
             //content: location[i].contentString
             
-        });
-        
+        });        
    /*
     * ***********************************************************************************************
     * The addListener method of the Google Maps object is activated by clicking the mouse on one	*
@@ -383,23 +381,13 @@ function setAllMap() {
              infowindow.setOptions({maxWidth:200}); 
              map.setZoom(20);
       		 infowindow.open(map,this);
-        
-     
-      
-     /* var windowWidth = $(window).width();
-         if(windowWidth <= 1080) {
-            map.setZoom(20);
-         } else if(windowWidth > 1080) {
-            map.setZoom(20);  
-         }*/
-         map.setCenter(marker.getPosition());
-         location[i].picBoolTest = true;  
+         	 map.setCenter(marker.getPosition());
+         	 location[i].picBoolTest = true;  
           }; 
         })(location[i].holdMarker, i));
                 
         var searchNav = $('#nav' + i);
-        
-       
+             
         /*
          * **********************************************************
          * This function zooms in on the marker and displays the	* 
@@ -419,22 +407,11 @@ function setAllMap() {
              infowindow.setOptions({maxWidth:200}); 
              map.setZoom(20);
              infowindow.open(map,marker);
-             //map.setCenter(marker.getPosition()); 
-      
-      /*      
-      var windowWidth = $(window).width();
-         if(windowWidth <= 1080) {
-            map.setZoom(20);
-         } else if(windowWidth > 1080) {
-            map.setZoom(20);  
-         }*/
-         map.setCenter(marker.getPosition());
-         location[i].picBoolTest = true;
+         	 map.setCenter(marker.getPosition());
+         	 location[i].picBoolTest = true;
           };           
-        })(location[i].holdMarker, i));
-    
-  };
-   	
+        })(location[i].holdMarker, i));   
+  };  	
 };
 	
 /*
@@ -473,7 +450,6 @@ viewModel.markers = ko.dependentObservable(function() {
 
 ko.applyBindings(viewModel);
 
-
 /*
  ********************************************
  * show / hide markers in sync with nav		*
@@ -484,7 +460,6 @@ ko.applyBindings(viewModel);
 $("#input").keyup(function() {
 setAllMap();
 });
-
 
 var isNavVisible = true;
 
