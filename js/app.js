@@ -206,6 +206,7 @@ function connectFourSquare() {
 				}
 				tips = tipId + '%' + tipText;	
 				splitTips(tips);	
+				
 			})
 			.fail(function(jqXHR, textStatus, errorThrown) {
 				alert('Error connecting to Foursquare: ' + textStatus);
@@ -229,6 +230,7 @@ function splitTips(tip) {
 	for (i=0; i<markers.length; i++) {
 		if (markers[i].venueId === tipSplit[0]) {
 			markers[i].tips = tipSplit[1];
+			
 			return; 
 		} 
 	}
@@ -258,7 +260,7 @@ function initialize() {
         disableDefaultUI: true
 		};	
     if($(window).width() <= 1080) {
-        mapOptions.zoom = 13;
+        mapOptions.zoom = 14;
     }
     if ($(window).width() < 850 || $(window).height() < 595) {
         hideNav();
@@ -354,32 +356,10 @@ function setAllMap() {
 			map: map,
 			title: location[i].title,  
    	});
-   	 	
-        /*
-         * ******************************************
-         * Binds infoWindow content to each marker	*
-         * 											*
-         * ******************************************
-         */
-        
-     location[i].contentString = '<img src="' + streetViewUrl + location[i].streetAddress + location[i].cityAddress +
-             '" alt="Street View Image of ' + location[i].title + '"><br><hr style="margin-bottom: 5px"><strong>' + 
-             location[i].title + '</strong><br><p>' + 
-             location[i].tips + '<br>' + 
-             location[i].streetAddress + '<br>' + 
-             location[i].cityAddress + '<br></p><a class="web-links" href="http://' + location[i].url + 
-             '" target="_blank">' + location[i].url + '</a>';
-  
-  /*
-   ******************************************************
-   * The infoWindow object which holds the information	* 
-   * passed in from the markers array. 					*
-   * 													*
-   * ****************************************************
-   */	   
-   	
+   	 	  	
   var infowindow = new google.maps.InfoWindow({
-            content: location[i].contentString
+            //content: location[i].contentString
+            
         });
         
    /*
@@ -400,21 +380,26 @@ function setAllMap() {
              location[i].streetAddress + '<br>' + 
              location[i].cityAddress + '<br></p><a class="web-links" href="http://' + location[i].url + 
              '" target="_blank">' + location[i].url + '</a>');
-      infowindow.open(map,this);
+             infowindow.setOptions({maxWidth:200}); 
+             map.setZoom(20);
+      		 infowindow.open(map,this);
+        
+     
       
-      var windowWidth = $(window).width();
+     /* var windowWidth = $(window).width();
          if(windowWidth <= 1080) {
             map.setZoom(20);
          } else if(windowWidth > 1080) {
             map.setZoom(20);  
-         }
+         }*/
          map.setCenter(marker.getPosition());
-         location[i].picBoolTest = true;
+         location[i].picBoolTest = true;  
           }; 
         })(location[i].holdMarker, i));
                 
         var searchNav = $('#nav' + i);
         
+       
         /*
          * **********************************************************
          * This function zooms in on the marker and displays the	* 
@@ -431,15 +416,26 @@ function setAllMap() {
              location[i].streetAddress + '<br>' + 
              location[i].cityAddress + '<br></p><a class="web-links" href="http://' + location[i].url + 
              '" target="_blank">' + location[i].url + '</a>');
-            infowindow.open(map,marker);
+             infowindow.setOptions({maxWidth:200}); 
+             map.setZoom(20);
+             infowindow.open(map,marker);
+             //map.setCenter(marker.getPosition()); 
+      
+      /*      
+      var windowWidth = $(window).width();
+         if(windowWidth <= 1080) {
             map.setZoom(20);
-            map.setCenter(marker.getPosition());
-          }; 
+         } else if(windowWidth > 1080) {
+            map.setZoom(20);  
+         }*/
+         map.setCenter(marker.getPosition());
+         location[i].picBoolTest = true;
+          };           
         })(location[i].holdMarker, i));
     
   };
    	
-};	
+};
 	
 /*
  ********************************************************************************
